@@ -1,0 +1,9 @@
+.codeEditor {
+    flex-grow: 1;
+    max-width: 1200px;
+    font-size: 15px;
+    background: #172c3d;
+    border: 0;
+    color: white;
+    padding: 5px;
+}

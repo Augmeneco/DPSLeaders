@@ -1,0 +1,197 @@
+﻿@inherits LayoutComponentBase
+
+@using DPSLeaders.Components.UI
+
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+@inject SearchInputService SearchInputService
+
+@implements IDisposable
+@rendermode InteractiveServer
+
+<PageTitle>DPS Leaders</PageTitle>
+@{
+    relativePath = NavigationManager.ToBaseRelativePath(NavigationManager.Uri).Split('?')[0];
+}
+@if (!IsMobile){
+<div class="top" style="@((IsMobile||userAgent=="") ? "display: none;" : "")">
+    DPS Leaders
+    <input class="inputChar" type="text" placeholder="Имя персонажа" @bind="SearchInputService.Text" @bind:event="oninput"
+        style="@((relativePath != "" && relativePath != "#") ? "visibility: hidden;" : "")" />
+        
+    <div class="buttonsPanel">
+        @foreach (var button in new[] {"teams", "balancer", "avgcr", "wish"}){
+            var isSelected = false;
+            var href = button!="teams" ? button : "";
+
+            if (relativePath == "" && button == "teams") isSelected = true;
+            if (relativePath == "balancer" && button == "balancer") isSelected = true;
+            if (relativePath == "avgcr" && button == "avgcr") isSelected = true;
+            if (relativePath == "wish" && button == "wish") isSelected = true;
+
+            if (button == "wish") href = "https://augmeneco.ru/universal_roll_simulator/";
+
+            <PageButton Selected="@isSelected" name="@button" href="@href"/>
+
+        }
+    </div>
+</div>} 
+else{
+@if (MobilePanelOpen){
+<div class="mobileMenu">
+    <div style="display: flex; width: 100%; height: 50px;">
+        <a @onclick="MobilePanelChange">
+            <img src="data/images/mobile_bt_open.svg" style="margin: 5px; width: 40px; height: 40px;"><img/></a>
+        <span style="width: 100%; text-align: center; color: #CBBBA0; font-size: 20.40px; align-self: center; margin-right: 5px">DPS Leaders</span>
+    </div>
+    <div style="display: flex; flex-direction: column;">
+        @{
+            var buttonNamesMap = new Dictionary<string, string> {
+                {"teams", "Команды"},
+                {"balancer", "Оптимайзер"},
+                {"avgcr", "Соотношение критов"},
+                {"wish", "Симулятор круток"}
+            };
+        }
+        @foreach (var button in new[] {"teams", "balancer", "avgcr", "wish"}){
+            var isSelected = false;
+            var href = button!="teams" ? button : "";
+
+            if (relativePath == "" && button == "teams") isSelected = true;
+            if (relativePath == "balancer" && button == "balancer") isSelected = true;
+            if (relativePath == "wish" && button == "wish") isSelected = true;
+            if (relativePath == "avgcr" && button == "avgcr") isSelected = true;
+
+            if (button == "wish") href = "https://augmeneco.ru/universal_roll_simulator/";
+
+            <a href="@href" @onclick="@MobilePanelChange" style="text-decoration: none; color: white;">
+                <div style="display: flex; flex-direction: row;">
+                    <PageButton Selected="@isSelected" name="@button" href="@href" MobilePanelChange="@MobilePanelChange"/>
+                    <span style="align-self: center;"> @buttonNamesMap[button] </span>
+                </div>
+            </a>  
+        }
+    </div>
+</div>   
+}
+
+<div class="topMobile">
+    <a @onclick="MobilePanelChange">
+        <img src="data/images/mobile_bt_open.svg" style="margin: 5px; width: 40px; height: 40px;"><img/></a>
+
+    <input class="inputChar" style="width: 100%; height: 100%; font-size: 13px; height: 40px; align-self: center; margin-right: 10px; @((relativePath != "" && relativePath != "#") ? "visibility: hidden;" : "")" type="text" placeholder="Имя персонажа" @bind="SearchInputService.Text" @bind:event="oninput"/>
+</div>}
+
+<div style="margin-inline: auto; @((userAgent=="") ? "display: none;" : "")">
+    <div class="mainPanel">
+        <CascadingValue Value="@searchInput" Name="SearchInput">
+        <CascadingValue Value="@IsMobile" Name="IsMobile">
+            @Body
+        </CascadingValue>
+        </CascadingValue>
+    </div>
+</div>
+<div style="display: flex; height: 100%; width: 100%; align-items: flex-end; font-size: 15px; justify-content: center;">
+    <div>
+        Разработано Augmeneco. Контакты: <a href="https://t.me/cha14ka">TG</a>
+    </div>
+    
+</div>
+
+<div id="blazor-error-ui">
+    An unhandled error has occurred.
+    <a href="" class="reload">Reload</a>
+    <a class="dismiss">🗙</a>
+</div>
+
+@code {
+    public string searchInput {get; set;}
+
+    string relativePath = "";
+
+    protected override async Task OnInitializedAsync(){
+        relativePath = NavigationManager.ToBaseRelativePath(NavigationManager.Uri).Split('?')[0];
+
+        SearchInputService.OnTextChanged += StateHasChanged;
+    }
+}
+
+@code {
+    public bool _isMobile;
+    private DotNetObjectReference<MainLayout>? _dotNetHelper;
+    private string? _handlerName;
+    public string userAgent = "";
+    public bool MobilePanelOpen = false;
+
+    public bool IsMobile
+    {
+        get => _isMobile;
+        private set
+        {
+            if (_isMobile != value)
+            {
+                _isMobile = value;
+                StateHasChanged();
+            }
+        }
+    }
+
+    public void MobilePanelChange(){
+        MobilePanelOpen = !MobilePanelOpen;
+    }
+
+    public string CheckUserAgent(){
+        if (
+            (userAgent.Contains("Mobile") && userAgent.Contains("Android")) ||
+            (userAgent.Contains("iPhone"))
+        ){
+            IsMobile = true;
+            return "Mobile";
+        } 
+
+        if (
+            (userAgent.Contains("Android") && !userAgent.Contains("Mobile")) ||
+            (userAgent.Contains("iPad"))
+        ){
+            IsMobile = false;
+            return "Tablet";
+        }
+
+        return "Desktop";
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        //CheckUserAgent();
+        if (firstRender)
+        {   
+            _dotNetHelper = DotNetObjectReference.Create(this);
+            _handlerName = await JSRuntime.InvokeAsync<string>(
+                "screenResize.listenForResize", _dotNetHelper);
+            userAgent = await JSRuntime.InvokeAsync<string>("getUserAgent");
+            CheckUserAgent();
+        }
+    }
+
+    [JSInvokable]
+    public async Task UpdateScreenSize(int width, int height)
+    {
+        //IsMobile = width < 768; // Порог для мобильных устройств
+
+        string PlType = CheckUserAgent();
+        if (PlType == "Phone")
+            IsMobile = width < height;
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        _dotNetHelper?.Dispose();
+        if (_handlerName != null)
+        {
+            JSRuntime.InvokeVoidAsync("screenResize.removeResizeListener", _handlerName);
+        }
+        SearchInputService.OnTextChanged -= StateHasChanged;
+    }
+}

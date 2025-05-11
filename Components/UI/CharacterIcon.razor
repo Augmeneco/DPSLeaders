@@ -1,0 +1,45 @@
+@inject SearchInputService SearchInputService
+
+@code{
+    [Parameter]
+    public string Name {get; set;} = "wanderer";
+    [Parameter]
+    public string Weapon {get; set;} = "empty";
+    [Parameter]
+    public string[] Artifacts {get; set;} = new[] {"empty", "empty"};
+    [Parameter]
+    public int Rarity {get; set;} = 5;
+    [CascadingParameter(Name = "IsMobile")]
+    public bool isMobile {get; set;} = false;
+    [CascadingParameter(Name = "SearchInput")]
+    public string searchInput {get; set;} = "";
+}
+
+<a @onclick="@(async () => {
+    List<string> splitted = SearchInputService.Text.Split(" ").ToList<string>();
+    string NameLower = Name.ToLower();
+    
+    if (splitted.Contains(NameLower)){
+        splitted.Remove(NameLower);
+    } else {
+        splitted.Add(NameLower);
+    }
+    SearchInputService.Text = string.Join(" ", splitted);
+
+    //SearchInputService.Text += " "+Name;
+})">
+<div class="Char">
+    <div class="RarityBackground4" style="@(Rarity!=4 ? "visibility: hidden;": "")"></div>
+    <div class="RarityBackground5" style="@(Rarity!=5 ? "visibility: hidden;": "")"></div>
+    <img class="Avatar" src="data/images/characters/@(Name).png"/>
+    <img class="Weapon" src="data/images/weapons/@(Weapon).png" />
+    <img class="Art1" src="data/images/artifacts/@(Artifacts[0]).png" style="@(Artifacts[0] == "empty" ? "visibility: hidden;": "")"/>
+    <img class="Art2" src="data/images/artifacts/@(Artifacts[1]).png" style="@(Artifacts[1] == "empty" ? "visibility: hidden;": "")"/>
+    <div class="CharName"> @(char.ToUpper(Name[0]) + Name.Substring(1))</div>
+    <div class="@(Rarity==5 ? "Stars5": "Stars4")">
+        @foreach(var star in Enumerable.Range(1, Rarity)){
+            <img class="Star" src="data/images/star.svg"/>
+        }
+    </div>
+</div>
+</a>    

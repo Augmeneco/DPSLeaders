@@ -1,0 +1,151 @@
+﻿@page "/balancer"
+@attribute [StreamRendering]
+@using DPSLeaders.Components.UI
+@using System.Diagnostics
+@using System.IO
+@using System.Text
+
+<PageTitle>Balancer</PageTitle>
+
+<div style="display: flex; justify-content: center; margin: 10px; ">
+    <GIButton Text="Отбалансить" style="width: 200px;" top="0px" href="balancer" newPage=false OnClick="@RunCommand"/>
+</div>
+
+@if (!isMobile){
+<div style="display: flex; flex-direction: row; max-width: 1200px; gap: 10px">
+    <div style="display: flex; flex-direction: column; width: 49vw;">
+        <textarea rows=@rowsIn @bind="codeIn" @oninput="ResizeTextIn" class="codeEditor" placeholder="Вставьте конфиг из гксима">
+        </textarea>
+    </div>
+    <div style="display: flex; flex-direction: column; width: 49vw;">
+        <textarea rows=@rowsOut @bind="ConsoleOutput" @oninput="ResizeTextOut" class="codeEditor" readonly></textarea>
+    </div>
+</div>}
+else{
+
+<GIButtonMobile Text="Оригинал" style="width: 100px; margin-bottom: 5px;"
+    OnClick="@(() => { activeEditor = 0; })" disabled=@( (activeEditor==0) ? true : false ) areSwitch=true />
+
+<GIButtonMobile Text="Оптимизированный" style="width: 170px; margin-bottom: 5px"
+    OnClick="@(() => { activeEditor = 1; })" disabled=@( (activeEditor==1) ? true : false ) areSwitch=true />
+
+<div style="display: flex; flex-direction: row; max-width: 1200px; gap: 10px;">
+    <div style="@((activeEditor == 1) ? "display: none": "display: flex"); flex-direction: column; @((activeEditor == 0) ? "width: 100vw": "width: 0vw")">
+        <textarea style="font-size: 12px" rows=@rowsIn @bind="codeIn" @oninput="ResizeTextIn" class="codeEditor" placeholder="Вставьте конфиг из гксима">
+        </textarea>
+    </div>
+    <div style="@((activeEditor == 0) ? "display: none": "display: flex"); flex-direction: column; @((activeEditor == 1) ? "width: 100vw": "width: 0vw")">
+        <textarea style="font-size: 12px" rows=@rowsOut @bind="ConsoleOutput" @oninput="ResizeTextOut" class="codeEditor" readonly></textarea>
+    </div>
+</div>
+}
+
+@code {
+    public string codeIn {get; set;}
+    public string codeOut {get; set;}
+    public int rowsIn = 2;
+    public int rowsOut = 2;
+    public int activeEditor = 0;
+
+    void ResizeTextIn(ChangeEventArgs e){
+        rowsIn = e.Value.ToString().Split("\n").Length;
+    }
+    void ResizeTextOut(ChangeEventArgs e){
+        rowsOut = e.Value.ToString().Split("\n").Length;
+    }
+
+    [CascadingParameter(Name = "IsMobile")]
+    public bool isMobile {get; set;} = false;
+}
+
+@code {
+    public string ConsoleOutput = "";
+    private readonly StringBuilder outputBuffer = new StringBuilder();
+
+    private async Task RunCommand()
+    {
+        activeEditor = 1;
+
+        outputBuffer.Clear();
+        ConsoleOutput = "";
+        StateHasChanged();
+
+        var configPath = $"wwwroot/{Guid.NewGuid()}.conf";
+        
+        try
+        {
+            await File.WriteAllTextAsync(configPath, codeIn);
+
+            using (var process = new Process())
+            {
+                process.StartInfo = new ProcessStartInfo
+                {
+                    FileName = "wwwroot/data/gcsim",
+                    Arguments = $"--substatOptimFull -c \"{configPath}\"",
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                };
+
+                process.OutputDataReceived += (sender, args) => AppendOutput(args.Data);
+                process.ErrorDataReceived += (sender, args) => AppendOutput(args.Data);
+
+                process.Start();
+                process.BeginOutputReadLine();
+                process.BeginErrorReadLine();
+
+                await process.WaitForExitAsync();
+                AppendOutput($"\nProcess exited with code {process.ExitCode}");
+    
+                if (File.Exists(configPath))
+                {
+                    var fileContent = await File.ReadAllTextAsync(configPath);
+
+                    if (codeIn != fileContent){
+                        outputBuffer.Clear();
+                        ConsoleOutput = "";
+                        StateHasChanged();
+                        AppendOutput(fileContent);
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            AppendOutput($"Error: {ex.Message}");
+        }
+        finally
+        {
+            CleanupFile(configPath);
+        }
+    }
+
+    private void CleanupFile(string path)
+    {
+        try
+        {
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+        }
+        catch (Exception ex)
+        {
+            AppendOutput($"\nDelete error ({Path.GetFileName(path)}): {ex.Message}");
+        }
+    }
+
+    private void AppendOutput(string message)
+    {
+        if (string.IsNullOrEmpty(message)) return;
+        
+        outputBuffer.AppendLine(message);
+        InvokeAsync(() =>
+        {
+            ConsoleOutput = outputBuffer.ToString();
+            rowsOut = ConsoleOutput.Split("\n").Length;
+            StateHasChanged();
+        });
+    }
+}

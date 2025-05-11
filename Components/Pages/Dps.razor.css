@@ -1,0 +1,74 @@
+@font-face {
+  font-family: "Genshin";
+  src: url("Genshin.ttf");
+}
+
+body {
+  background: #173e59;
+  padding: 0;
+  margin: 0;
+  height: 100vh;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  font-family: Genshin;
+}
+
+.top {
+  background-color: #112d41;
+  min-height: 9.44vh;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 28px;
+  padding-left: 20px;
+  font-size: 3vh;
+}
+
+.inputChar {
+  background: #d9d9d9;
+  border-radius: 90px;
+  border: 3px #3c4354 solid;
+  font-size: 2.5vh;
+  padding-left: 1vh;
+  min-height: 4vh;
+  outline: none;
+}
+
+.buttonsPanel {
+  padding: 10px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  display: inline-flex;
+  flex-grow: 1;
+}
+
+.mainPanel {
+  margin: 2vh;
+  height: 100vh;
+  width: 100wh;
+  display: flex;
+  flex-direction: column;
+}
+
+.teamInfo {
+  justify-content: center;
+  align-items: center;
+  gap: 14.97px;
+  display: inline-flex;
+}
+
+.pageButton {
+  background-color: #E9E5DC;
+  color: #3D4452;
+  font-size: 16px;
+  width: 40px;
+  height: 40px;
+  text-align: center;
+  justify-content: center;
+  align-items: center; 
+  text-decoration: none;
+  display: flex;
+  
+}

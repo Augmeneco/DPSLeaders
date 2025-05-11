@@ -1,0 +1,88 @@
+@page "/admin"
+@using Newtonsoft.Json.Linq
+@using DNTCaptcha.Blazor
+@using DPSLeaders.Components.UI
+@using System.Collections.ObjectModel
+@inject IDataService DataService
+
+<PageTitle>Admin</PageTitle>
+
+@if (!authed){
+    <div style='align-self: center; flex-direction: column; display: flex;'>
+    <input class="inputChar" type="text" placeholder="Логин" @bind="login"/>
+    <input class="inputChar" type="text" placeholder="Пароль" @bind="password"/>
+    <input class="inputChar" type="text" placeholder="Капча" @bind="captcha"/>
+    </div>
+
+    <GIButton OnClick="@auth" href="admin#" Text="Войти" newPage=false style="align-self: center"/>
+    <br>
+    <DntInputCaptcha @bind-Value="CaptchaText" Language="@NumberToWordLanguage.Russian" />
+} else{
+    <div class="mainPanel">
+        <div class="panelElement">
+            <div class="vertFlex">
+                <input class="inputChar" type="text" placeholder="Имя" @bind="new5StarCharName"/>
+                <GIButton OnClick="@addChar" href="admin#" Text="Добавить" newPage=false />
+            </div><br>
+            <div class="charList">
+            @{
+                foreach(var Char in charList){
+                    <div @key="@Char" class="charElement">
+                        <CharacterIcon Name="@Char" Weapon="null"/>
+                        <GIButton OnClick="@(() => removeChar(@Char))" href="admin#" Text="Удалить" newPage=false style="width: 140px"/>
+                    </div>
+                }
+            }
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    JObject db;
+    JObject info;
+    ObservableCollection<string> charList = new ObservableCollection<string>();
+
+    string new5StarCharName = "";
+
+    string login;
+    string password;
+    string captcha = "";
+    bool authed = false;
+
+    protected override async Task OnInitializedAsync(){
+        db = DataService.GetDbData();
+        info = DataService.GetInfoData();
+
+        foreach (var item in info["fivestar_chars"])
+            charList.Add(item.ToString());
+        
+    }
+    public string CaptchaText { set; get; }
+
+    void removeChar(string name){
+        var elementsToRemove = info["fivestar_chars"]
+            .Where(token => JToken.DeepEquals(token, name))
+            .ToList();
+        foreach (var element in elementsToRemove)
+            ((JArray)info["fivestar_chars"]).Remove(element);
+
+        File.WriteAllText("wwwroot/data/info.json", info.ToString(Newtonsoft.Json.Formatting.Indented));
+
+        charList.Remove(name);
+    }
+
+    void addChar(){
+        if (new5StarCharName.ToString() == "") return;
+        ((JArray)info["fivestar_chars"]).Add(new5StarCharName);
+        File.WriteAllText("wwwroot/data/info.json", info.ToString(Newtonsoft.Json.Formatting.Indented));
+
+        charList.Add(new5StarCharName);
+    }
+
+    void auth(){
+        if (captcha == CaptchaText &&
+            login == info["admin"]["login"].ToString() &&
+            password == info["admin"]["password"].ToString()) authed = true;
+    }
+}

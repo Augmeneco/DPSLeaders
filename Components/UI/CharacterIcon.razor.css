@@ -1,0 +1,220 @@
+@font-face {
+    font-family: "Genshin";
+    src: url("Genshin.ttf");
+}
+
+.Char {
+    width: 95.79px;
+    height: 121.24px;
+    position: relative;
+    background: #E9E5DC;
+    border-radius: 10px;
+}
+
+.RarityBackground4 {
+    width: 95.79px;
+    height: 95.79px;
+    left: 0px;
+    top: 0px;
+    position: absolute;
+    background: linear-gradient(315deg, #8C6AB1 0%, #665086 94%);
+    border-top-left-radius: 7.48px;
+    border-top-right-radius: 7.48px;
+    border-bottom-right-radius: 22px;
+}
+
+.RarityBackground5 {
+    width: 95.79px;
+    height: 95.79px;
+    left: 0px;
+    top: 0px;
+    position: absolute;
+    background: linear-gradient(315deg, #BE7726 0%, #815634 94%);
+    border-top-left-radius: 7.48px;
+    border-top-right-radius: 7.48px;
+    border-bottom-right-radius: 22px;
+}
+
+.Avatar {
+    width: 95.79px;
+    height: 95.79px;
+    left: 0px;
+    top: 0px;
+    position: absolute;
+    border-top-left-radius: 7.48px;
+    border-top-right-radius: 7.48px;
+    border-bottom-right-radius: 22px;
+
+}
+
+.Weapon {
+    width: 68.85px;
+    height: 68.85px;
+    left: 37.42px;
+    top: 26.94px;
+    position: absolute;
+    filter: drop-shadow(1px 1px 0 white) drop-shadow(-1px -1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white);
+}
+
+.Art1 {
+    width: 31.43px;
+    height: 31.43px;
+    left: -0px;
+    top: 64.36px;
+    position: absolute;
+    filter: drop-shadow(1px 1px 0 white) drop-shadow(-1px -1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white);
+}
+
+.Art2 {
+    width: 31.43px;
+    height: 31.43px;
+    left: 14.97px;
+    top: 64.36px;
+    position: absolute;
+    filter: drop-shadow(1px 1px 0 white) drop-shadow(-1px -1px 0 white) drop-shadow(1px -1px 0 white) drop-shadow(-1px 1px 0 white);
+}
+
+.CharName {
+    width: 95.79px;
+    height: 25.44px;
+    left: -0px;
+    top: 99px;
+    position: absolute;
+    text-align: center;
+    color: black;
+    font-size: 11.97px;
+    font-family: Inter;
+    font-weight: 400;
+    word-wrap: break-word;
+    font-family: Genshin;
+}
+
+.Stars5 {
+    left: 17.96px;
+    top: 88.31px;
+    position: absolute;
+    justify-content: center;
+    align-items: center;
+    display: inline-flex;
+}
+
+.Stars4 {
+    left: 23.95px;
+    top: 88.31px;
+    position: absolute;
+    justify-content: center;
+    align-items: center;
+    display: inline-flex;
+}
+
+.Star {
+    width: 11.97px;
+    height: 11.97px;
+}
+
+@media (max-aspect-ratio: 1/1) {
+    .Char {
+        width: 50px;
+        height: 63.28px;
+        position: relative;
+        background: #E9E5DC;
+        border-radius: 3.91px;
+    }
+
+    .RarityBackground4 {
+        width: 50px;
+        height: 50px;
+        left: 0px;
+        top: 0px;
+        position: absolute;
+        background: linear-gradient(315deg, #8C6AB1 0%, #665086 94%);
+        border-top-left-radius: 3.91px;
+        border-top-right-radius: 3.91px;
+        border-bottom-right-radius: 11.72px;
+    }
+
+    .RarityBackground5 {
+        width: 50px;
+        height: 50px;
+        left: 0px;
+        top: 0px;
+        position: absolute;
+        background: linear-gradient(315deg, #BE7726 0%, #815634 94%);
+        border-top-left-radius: 3.91px;
+        border-top-right-radius: 3.91px;
+        border-bottom-right-radius: 11.72px;
+    }
+
+    .Avatar {
+        width: 50px;
+        height: 50px;
+        left: 0px;
+        top: 0px;
+        position: absolute;
+        border-top-left-radius: 3.91px;
+        border-top-right-radius: 3.91px;
+        border-bottom-right-radius: 11.72px;
+    }
+
+    .Weapon {
+        width: 35.94px;
+        height: 35.94px;
+        left: 19.53px;
+        top: 14.06px;
+        position: absolute;
+    }
+
+    .Art1 {
+        width: 16.41px;
+        height: 16.41px;
+        left: 0px;
+        top: 33.59px;
+        position: absolute;
+    }
+
+    .Art2 {
+        width: 16.41px;
+        height: 16.41px;
+        left: 7.81px;
+        top: 33.59px;
+        position: absolute;
+    }
+
+    .CharName {
+        width: 50px;
+        height: 13.28px;
+        left: 0px;
+        top: 50px;
+        position: absolute;
+        text-align: center;
+        color: black;
+        font-size: 6.25px;
+        font-family: Inter;
+        font-weight: 400;
+        word-wrap: break-word;
+        font-family: Genshin;
+    }
+
+    .Stars5 {
+        left: 9.50px;
+        top: 46.09px;
+        position: absolute;
+        justify-content: center;
+        align-items: center;
+        display: inline-flex;
+    }
+
+    .Stars4 {
+        left: 12.50px;
+        top: 46.09px;
+        position: absolute;
+        justify-content: center;
+        align-items: center;
+        display: inline-flex;
+    }
+
+    .Star {
+        width: 6.25px;
+        height: 6.25px;
+    }
+}

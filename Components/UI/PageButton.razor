@@ -1,0 +1,27 @@
+@code {
+    [Parameter]
+    public bool Selected { get; set; }
+    
+    [Parameter]
+    public string Name {get; set;} = "teams";
+
+    [Parameter]
+    public string href {get; set;} = "#";
+
+    [Parameter]
+    public EventCallback MobilePanelChange {get; set;}
+
+    private void OnClick(){
+        MobilePanelChange.InvokeAsync();
+    }
+
+    public string GetFileName(){
+        return $"{Name}_{(Selected ? "active" : "inactive")}.png";
+    }
+}
+
+<a class="button" href="@href" style="text-decoration: none; color: white">
+    <div class="circle" style="@(!Selected ? "visibility: hidden;": "")"></div>
+    <img src="data/images/ui/@GetFileName()">
+    <img src="data/images/ui/@GetFileName()">  
+</a>

@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "type": "dotnetwatchattach",
+            "request": "launch",
+            "name": ".NET Watch Attach",
+            "args": {
+                "env": {
+                    "ASPNETCORE_ENVIRONMENT": "Development"
+                }
+            },
+            "program": "DPSLeaders"
+        },
+        {
+            "name": "C#: DPSLeaders [http]",
+            "type": "dotnet",
+            "request": "launch",
+            "projectPath": "${workspaceFolder}/DPSLeaders.csproj",
+            "launchConfigurationId": "TargetFramework=;http"
+        }
+    ]
+}

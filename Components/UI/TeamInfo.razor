@@ -1,0 +1,91 @@
+@using Newtonsoft.Json.Linq
+@inject IDataService DataService
+
+@code{
+    [Parameter]
+    public JToken? Team { get; set; } = new JObject();
+    [CascadingParameter(Name = "IsMobile")]
+    public bool isMobile {get; set;} = false;
+    [CascadingParameter(Name = "SearchInput")]
+    public string searchInput {get; set;} = "";
+
+    JObject info;
+
+    protected override async Task OnInitializedAsync(){
+        info = DataService.GetInfoData();
+    }
+}
+
+@{
+    string DPS = @Math.Floor(float.Parse(Team["dps"].ToString())).ToString();
+    string url = "https://gcsim.app/db/"+Team["id"].ToString();
+}
+@if (!isMobile){
+<div class="TeamInfo" style="flex-direction: row;">
+    <div class="TeamInfo">
+    @{
+        foreach(var character in Team["characters"]){
+            string[] artifacts = {"empty", "empty"};
+
+            if (character?["artifacts"].Count() > 0)
+                artifacts[0] = character["artifacts"][0].ToString();
+            if (character?["artifacts"].Count() > 1)
+                artifacts[1] = character["artifacts"][1].ToString();
+
+            string charName = character["name"].ToString();
+
+            <CharacterIcon 
+                Name="@character?["name"]?.ToString()"
+                Weapon="@character?["weapon"]?.ToString()"
+                Rarity=@(info["fivestar_chars"].ToList().Contains(charName) ? 5 : 4)
+                Artifacts="@artifacts"
+            />
+        }
+    }</div>
+    <div>
+    @{    
+        <div style="display: flex; position: relative; flex-direction: column; height: 121.24px;">
+            <span style="height: 80px; width: 700px; font-size: 15.4px; flex-grow: 1;">@Team["desc"].ToString()</span>
+            <GIButton Text="@("DPS: "+DPS)" href="@url"/>
+        </div>
+    }</div>
+</div>} 
+
+else{
+<div style="width: 100vw; padding-top: 5px; padding-bottom: 5px; align-items: center; display: flex; margin-bottom: 10px; padding: 10px; background-color: #112D41; align-items: center; justify-content: center;">
+    <div style="flex-direction: column; width: 300px;">
+        <div style="flex-direction: row; margin-bottom: 5px;">
+            <div style="display: flex; flex-direction: row; gap: 5px;">
+                @{
+                    foreach(var character in Team["characters"]){
+                        string[] artifacts = {"empty", "empty"};
+
+                        if (character?["artifacts"].Count() > 0)
+                            artifacts[0] = character["artifacts"][0].ToString();
+                        if (character?["artifacts"].Count() > 1)
+                            artifacts[1] = character["artifacts"][1].ToString();
+
+                        string charName = character["name"].ToString();
+
+                        <CharacterIcon 
+                            Name="@character?["name"]?.ToString()"
+                            Weapon="@character?["weapon"]?.ToString()"
+                            Rarity=@(info["fivestar_chars"].ToList().Contains(charName) ? 5 : 4)
+                            Artifacts="@artifacts"
+                        />
+                    }
+                }
+            </div>
+            <div style="display: flex; flex-direction: column; margin-left: 5px; ">
+                <span style="font-size: 12px; flex-grow: 1;"><span style="color: #d3bc8e">DPS:</span><br>@DPS</span>
+                <GIButtonMobile Text="Open" href="@url"/>
+            </div>
+            
+        </div>
+        <span style="width: 300px; font-size: 12px; align-self: center;">
+            @Team["desc"].ToString()
+        </span>
+    </div>
+</div>
+
+}

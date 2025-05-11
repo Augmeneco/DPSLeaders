@@ -1,0 +1,140 @@
+﻿@page "/"
+@using Newtonsoft.Json.Linq
+@rendermode InteractiveServer
+@attribute [StreamRendering]
+@inject IDataService DataService
+@using DPSLeaders.Components.UI
+@inject NavigationManager NavigationManager
+@inject NavigationManager Navigation
+@inject SearchInputService SearchInputService
+@implements IDisposable
+
+<PageTitle>DPSLeaders</PageTitle>
+
+@{
+    int startIndex = 0;
+    int pageSize = 20;
+    int endIndex = pageSize;
+
+    string pageQuery = GetQueryParm("page");
+    if (pageQuery == "") { 
+        pageQuery = "0";
+        page = 0;
+    }
+
+    if (pageQuery != "" || int.Parse(pageQuery)>0){
+        page = int.Parse(pageQuery);
+
+        if (oldSearchValue != SearchInputService.Text){
+            page = 0;
+            changePage(0);
+            NavigationManager.NavigateTo(NavigationManager.BaseUri, false);
+        }
+
+        startIndex = pageSize*page;
+        endIndex = pageSize*page+pageSize;
+    }
+
+    JObject filteredDb = string.IsNullOrEmpty(SearchInputService.Text) ? db : FilterTeams(SearchInputService.Text.ToLower().Split(" ")) ;
+    foreach (var item in GetSubset(filteredDb, startIndex, endIndex)){
+        <TeamInfo Team=@item.Value/>
+    }
+    oldSearchValue = SearchInputService.Text;
+}
+
+<div style="display: flex; flex-direction: row; gap: 5px; justify-content: center;">
+    <a class="pageButton" href="?page=@(page-1)" @onclick="@(() => changePage(page-1))" style="@(page == 0 ? "visibility: hidden;": "")"> &larr; </a>
+    <span class="pageButton">@(GetQueryParm("page") == "" ? "0" : GetQueryParm("page"))</span>
+    <a class="pageButton" href="?page=@(page+1)" @onclick="(() => changePage(page+1))">	&rarr; </a>
+</div>
+
+@code {
+    JObject db;
+    JObject info;
+    int page = 0;
+    string oldSearchValue = "";
+
+    [CascadingParameter(Name = "SearchInput")]
+    public string searchInput {get; set;} = "";
+
+    [CascadingParameter(Name = "IsMobile")]
+    public bool isMobile {get; set;} = false;
+
+    protected override async Task OnInitializedAsync(){
+        db = DataService.GetDbData();
+        searchInput = "";
+        Navigation.LocationChanged += OnLocationChanged;
+        SearchInputService.OnTextChanged += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        SearchInputService.OnTextChanged -= StateHasChanged;
+    }
+
+    private void OnLocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        StateHasChanged();
+    }
+
+    void changePage(int page_){
+        page = page_;
+    }
+
+    string GetQueryParm(string parmName)
+    {
+        var uriBuilder = new UriBuilder(NavigationManager.Uri);
+        var q = System.Web.HttpUtility.ParseQueryString(uriBuilder.Query);
+        return q[parmName] ?? "";
+    }
+
+    JObject GetSubset(JObject source, int startIndex, int end)
+    {
+        var properties = source.Properties().ToList();
+        int count = end-startIndex;
+        
+        var selectedProperties = properties
+            .Skip(startIndex)
+            .Take(count)
+            .ToList();
+
+        JObject result = new JObject();
+        foreach (var prop in selectedProperties)
+            result.Add(prop);
+
+        return result;
+    }
+
+    public JObject FilterTeams(string[] search){
+        JObject filteredDb = new JObject();
+
+        foreach (var teamProp in db.Properties()){
+            bool skip = false;
+            JObject teamData = (JObject)teamProp.Value;
+
+            foreach (string searchChar in search){
+                if (searchChar == "-") continue;
+
+                bool finded = false;
+                bool findedBlacklist = false;
+                foreach (var character in teamData["characters_list"]){
+                    if (searchChar.StartsWith("-")){
+                        if (character.ToString().Contains(searchChar.Substring(1))){
+                            skip = true;
+                            findedBlacklist = true;
+                            break;
+                        }
+                    }
+
+                    if (character.ToString().Contains(searchChar) && !searchChar.StartsWith("-")){
+                        finded = true;
+                    }
+                }
+                if (!finded && findedBlacklist==false && !searchChar.StartsWith("-")) skip = true;
+            }
+            if (skip) continue;
+            filteredDb.Add(teamProp.Name, teamData);
+        }
+        return filteredDb;
+    }
+}    

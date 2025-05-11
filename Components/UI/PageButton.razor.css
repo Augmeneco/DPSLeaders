@@ -1,0 +1,32 @@
+.button {
+    width: 64px;
+    height: 64px;
+    position: relative
+}
+
+.circle {
+    width: 49.23px;
+    height: 49.23px;
+    left: 7.38px;
+    top: 4.92px;
+    position: absolute;
+    background: #D9D9D9;
+    border-radius: 9999px
+}
+
+img {
+    width: 49.23px;
+    height: 49.23px;
+    left: 7.38px;
+    top: 4.92px;
+    position: absolute
+}
+
+.active_line {
+    width: 64px;
+    height: 3.69px;
+    left: 0px;
+    top: 60.31px;
+    position: absolute;
+    background: #CBBBA0
+}

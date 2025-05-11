@@ -1,0 +1,38 @@
+@code{
+    [Parameter]
+    public string Text { get; set; } = "Open";
+    [Parameter]
+    public string href { get; set; } = "#";
+    [Parameter]
+    public EventCallback OnClick { get; set; }
+    [Parameter]
+    public string style { get; set; } = "";
+    [Parameter]
+    public bool newPage {get; set; } = true; 
+    [Parameter]
+    public string top {get; set; } = "2px";  
+    [Parameter]
+    public bool disabled {get; set; } = false;
+    [Parameter]
+    public bool areSwitch {get; set; } = false;
+
+    private Dictionary<string, object> InputAttributes { get; set; } = new(){};
+
+    protected override async Task OnInitializedAsync(){
+        if (newPage)
+            InputAttributes["target"] = "_blank";
+
+
+    }
+}
+
+@{
+    if (!areSwitch)
+        InputAttributes["href"] = @href;
+}
+
+<a class="button" @onclick=OnClick style="@(style); @( (disabled) ? "background-color: gray;" : "") " @attributes=InputAttributes>
+  <div style="width: 16.24px; height: 16.24px; left: 3.11px; top: 1.55px; position: absolute; background: #313131; border-radius: 9999px"></div>
+  <div style="width: 9.99px; height: 9.99px; left: 6.23px; top: 4.68px; position: absolute; border-radius: 9999px; border: 1.25px #F9C731 solid"></div>
+  <div style="left: 22px; top: @top; position: absolute; color: #3D4452; font-size: 12.49px; word-wrap: break-word">@Text</div>
+</a>

@@ -1,0 +1,14 @@
+@font-face {
+    font-family: "Genshin";
+    src: url("Genshin.ttf");
+}
+
+.button {
+    width: 177px;
+    height: 32px;
+    position: relative;
+    background: #E9E5DC;
+    border-radius: 90px;
+    overflow: hidden;
+    font-family: "Genshin";
+}

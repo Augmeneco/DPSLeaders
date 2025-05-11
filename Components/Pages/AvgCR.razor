@@ -1,0 +1,69 @@
+@page "/avgcr"
+@using DPSLeaders.Components.UI
+@using System.Globalization
+
+<span>Сравнение критов относительно крит массы</span>
+<hr>
+
+<div class="colDiv gap center">
+    <div class="rowDiv gap">
+        <span class="selfCenter">Крит шанс:</span> <input class="inputChar" type="text" placeholder="Крит шанс" @bind="CritRate" @bind:event="oninput"/>
+    </div>
+    <div class="rowDiv gap">
+        <span class="selfCenter">Крит урон:</span> <input class="inputChar" type="text" placeholder="Крит урон" @bind="CritDamage" @bind:event="oninput"/>
+    </div>
+    
+    <table
+    <tbody>
+        <tr>
+            <td>Твои криты:</td>
+            <td>@(MyCrits())</td>
+        </tr>
+        <tr>
+            <td>Идеальные криты:<span style="margin-left: 10px;"></span></td>
+            <td>@(BestCrits())</td>
+        </tr>
+        <tr>
+            <td>Отклонение:</td>
+            <td>@Diff</td>
+        </tr>
+    </tbody>
+    </table>
+    
+</div>
+
+@code {
+    public string CritRate = "";
+    public string CritDamage = "";
+    public float CRInt = 0;
+    public float CDInt = 0;
+    public float BestCRInt = 0;
+    public float BestCDInt = 0;
+    public string Diff = "0%";
+
+    public string MyCrits(){
+        CritRate = CritRate.Replace(",", ".");
+        CritDamage = CritDamage.Replace(",", ".");
+        float.TryParse(CritRate, CultureInfo.InvariantCulture, out CRInt);
+        float.TryParse(CritDamage, CultureInfo.InvariantCulture, out CDInt);
+        return $"{CRInt}/{CDInt}";
+    }
+    public string BestCrits(){
+        float CV = CRInt*2+CDInt;
+        BestCRInt = CV/4;
+        BestCDInt = CV/2;
+
+        if (BestCRInt > 100){
+            BestCDInt = BestCDInt + (BestCRInt-100)*2;
+            BestCRInt = 100;
+        }
+
+        float DiffInt = ( (1+(BestCRInt/100)*(BestCDInt/100)) / (1+(CRInt/100)*(CDInt/100))-1 )*100;
+
+        DiffInt = (float)Math.Round((double)DiffInt, 2, MidpointRounding.AwayFromZero);
+        Diff = $"{DiffInt}%";
+
+        //return $"{BestCRInt}/{BestCDInt}";
+        return $"{(float)Math.Round((double)BestCRInt, 1, MidpointRounding.AwayFromZero)}/{(float)Math.Round((double)BestCDInt, 1, MidpointRounding.AwayFromZero)}";
+    }
+}
