@@ -11,7 +11,7 @@
 - ⚖️ Configuration file balancing for gcsim calculator
 - 🔐 Admin interface for managing character data
 
-## 🏆 Advantages over [simpack.app](https://simpact.app/)
+## 🏆 Advantages over [simpact.app](https://simpact.app/)
 
 Our solution provides better F2P character team balancing by:
 - 🛡️ Accounting for realistic artifact quality for F2P players
