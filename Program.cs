@@ -9,6 +9,7 @@ builder.Services.AddRazorComponents()
 //builder.Services.AddMemoryCache(); //кэширование
 builder.Services.AddSingleton<IDataService, DataService>();
 builder.Services.AddScoped<SearchInputService>();
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 

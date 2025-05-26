@@ -5,6 +5,7 @@
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime
 @inject SearchInputService SearchInputService
+@inject IHttpContextAccessor HttpContextAccessor
 
 @implements IDisposable
 @rendermode InteractiveServer
@@ -111,6 +112,13 @@ else{
 
     protected override async Task OnInitializedAsync(){
         relativePath = NavigationManager.ToBaseRelativePath(NavigationManager.Uri).Split('?')[0];
+        
+        var httpContext = HttpContextAccessor.HttpContext;
+        if (httpContext != null)
+        {
+            userAgent = httpContext.Request.Headers.UserAgent.ToString();
+            CheckUserAgent();
+        }
 
         SearchInputService.OnTextChanged += StateHasChanged;
     }
@@ -162,14 +170,11 @@ else{
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        //CheckUserAgent();
         if (firstRender)
         {   
             _dotNetHelper = DotNetObjectReference.Create(this);
             _handlerName = await JSRuntime.InvokeAsync<string>(
                 "screenResize.listenForResize", _dotNetHelper);
-            userAgent = await JSRuntime.InvokeAsync<string>("getUserAgent");
-            CheckUserAgent();
         }
     }
 
