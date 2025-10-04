@@ -1,7 +1,7 @@
 {
   "admin": {
     "login": "cha14ka",
-    "password": "testpassword"
+    "password": "DefektIV"
   },
   "blacklist_teams": [],
   "fivestar_chars": [
@@ -52,6 +52,10 @@
     "chasca",
     "xilonen",
     "mavuika",
-    "citlali"
+    "citlali",
+    "escoffier",
+    "mizuki",
+    "skirk",
+    "varesa"
   ]
 }

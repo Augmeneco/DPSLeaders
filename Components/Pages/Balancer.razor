@@ -95,8 +95,22 @@ else{
                 process.BeginOutputReadLine();
                 process.BeginErrorReadLine();
 
-                await process.WaitForExitAsync();
-                AppendOutput($"\nProcess exited with code {process.ExitCode}");
+                using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30)))
+                {
+                    try
+                    {
+                        await process.WaitForExitAsync().WaitAsync(cts.Token);
+                        AppendOutput($"\nProcess exited with code {process.ExitCode}");
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        if (!process.HasExited)
+                        {
+                            process.Kill();
+                            AppendOutput("\nError: Process timed out after 30 seconds and was terminated.");
+                        }
+                    }
+                }
     
                 if (File.Exists(configPath))
                 {

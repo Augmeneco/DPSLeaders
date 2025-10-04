@@ -9,9 +9,9 @@ import os
 import traceback
 import time
 
-c0_const = ['cyno', 'diluc', 'mona', 'nahida', 'nilou', 'qin', 'venti', 'wanderer', 'xiao', 'yaemiko', 'yelan', 'yoimiya', 'zhongli', 'eula', 'ganyu', 'hutao', 'itto', 'jean', 'kazuha', 'keqing', 'klee', 'kokomi', 'raiden', 'shenhe', 'shougun', 'tartaglia', 'qiqi', 'tighnari', 'albedo', 'ayaka', 'ayato', 'baizhu', 'alhaitham', 'lyney', 'neuvillette', 'furina', 'navia', 'wriothesley', 'xianyun', 'chiori', 'emilie', 'sigewinne', 'clorinde', 'arlecchino', 'mualani', 'kinich', 'chasca', 'xilonen', 'citlali', 'mavuika', 'athousandblazingsuns', 'starcallerswatch']
+c0_const = ['cyno', 'diluc', 'mona', 'nahida', 'nilou', 'qin', 'venti', 'wanderer', 'xiao', 'yaemiko', 'yelan', 'yoimiya', 'zhongli', 'eula', 'ganyu', 'hutao', 'itto', 'jean', 'kazuha', 'keqing', 'klee', 'kokomi', 'raiden', 'shenhe', 'shougun', 'tartaglia', 'qiqi', 'tighnari', 'albedo', 'ayaka', 'ayato', 'baizhu', 'alhaitham', 'lyney', 'neuvillette', 'furina', 'navia', 'wriothesley', 'xianyun', 'chiori', 'emilie', 'sigewinne', 'clorinde', 'arlecchino', 'mualani', 'kinich', 'chasca', 'xilonen', 'citlali', 'mavuika', 'escoffier']
 
-five_weapons = ['mistsplitterreforged', 'kagura', 'kagurasverity', 'redhornstonethresher', 'athousandfloatingdreams', 'thefirstgreatmagic', 'tomeoftheeternalflow', 'verdict', 'cranesechoingcall', 'urakumisugiri', 'silvershowerheartstrings', 'crimsonmoonssemblance', 'lumidouceelegy', 'absolution', 'astralvulturescrimsonplumage', 'peakpatrolsong', 'silvershowerheartstrings', 'surfsup', 'fangofthemountainking']
+five_weapons = ['mistsplitterreforged', 'kagura', 'kagurasverity', 'redhornstonethresher', 'athousandfloatingdreams', 'thefirstgreatmagic', 'tomeoftheeternalflow', 'verdict', 'cranesechoingcall', 'urakumisugiri', 'silvershowerheartstrings', 'crimsonmoonssemblance', 'lumidouceelegy', 'absolution', 'astralvulturescrimsonplumage', 'peakpatrolsong', 'silvershowerheartstrings', 'surfsup', 'fangofthemountainking', 'athousandblazingsuns', 'starcallerswatch', 'astralvulturescrimsonplumage', 'symphonistofscents']
 
 blacklist_teams = ['jn8qcb8TjjqK', 'JnDMB8gPQwLp', '69nzHHMNJ8cJ', 'n6n68DhqBmQc', 'mhHBcrhKKQGN']
 

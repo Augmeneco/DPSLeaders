@@ -5,10 +5,45 @@
     margin-bottom: 10px;
 }
 
+/* Для Webkit браузеров (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+    width: 6px;
+    background: transparent;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: white;
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.8);
+}
+
+::-webkit-scrollbar-button {
+    display: none;
+}
+
+/* Для Firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: white transparent;
+}
+
+/* Для Internet Explorer и старых версий Edge */
+body {
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+}
+
 div{
     display: flex;
 }
 
 @media (max-aspect-ratio: 1/1) {
-    
+        
 }
